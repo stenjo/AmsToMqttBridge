@@ -31,7 +31,7 @@
 
 class AmsWebServer {
 public:
-	AmsWebServer(RemoteDebug* Debug);
+	AmsWebServer(RemoteDebug* Debug, HwTools* hw);
     void setup(AmsConfiguration* config, MQTTClient* mqtt);
     void loop();
 
@@ -40,11 +40,12 @@ public:
 private:
 	RemoteDebug* debugger;
 	int maxPwr = 0;
-	HwTools hw;
+	HwTools* hw;
     AmsConfiguration* config;
 	AmsData data;
 	MQTTClient* mqtt;
-	File firmwareFile;
+	bool uploading = false;
+	File file;
 	bool performRestart = false;
 
 #if defined(ESP8266)
@@ -56,21 +57,41 @@ private:
 	bool checkSecurity(byte level);
 
 	void indexHtml();
+	void indexJs();
 	void configMeterHtml();
 	void configWifiHtml();
 	void configMqttHtml();
 	void configWebHtml();
+	void configDomoticzHtml();
 	void bootCss();
 	void gaugemeterJs();
+	void githubSvg();
     void dataJson();
 
+	void handleSetup();
 	void handleSave();
 
 	void configSystemHtml();
-	void configSystemPost();
-	void configSystemUpload();
+	String getSerialSelectOptions(int selected);
+	void firmwareHtml();
+	void firmwareUpload();
 	void restartWaitHtml();
 	void isAliveCheck();
+
+	void uploadHtml(const char* label, const char* action, const char* menu);
+	void deleteHtml(const char* label, const char* action, const char* menu);
+	void uploadFile(const char* path);
+	void deleteFile(const char* path);
+	void uploadPost();
+	void mqttCa();
+	void mqttCaUpload();
+	void mqttCaDelete();
+	void mqttCert();
+	void mqttCertUpload();
+	void mqttCertDelete();
+	void mqttKey();
+	void mqttKeyUpload();
+	void mqttKeyDelete();
 
 	void printD(String fmt, ...);
 	void printI(String fmt, ...);
